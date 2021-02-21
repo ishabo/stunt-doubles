@@ -11,4 +11,5 @@ export const CardImage = styled.Image`
   flex: 1;
   justify-content: center;
   border-radius: 10px;
+  width: 100%;
 `;

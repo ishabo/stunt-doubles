@@ -12,16 +12,16 @@ import {
 const isWeb = Platform.OS === 'web';
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
 
+
 interface IPanResponderProps {
   position: Animated.ValueXY;
   onSpringStart: () => void;
-  setDirection: (direction: 'left' | 'right') => void;
 }
 
 const onPanResponderRelease = ({
   position,
   onSpringStart,
-}: Omit<IPanResponderProps, 'setDirection'>) => (
+}: IPanResponderProps) => (
   _: GestureResponderEvent,
   gestureState: PanResponderGestureState,
 ) => {
@@ -43,14 +43,13 @@ const onPanResponderRelease = ({
   }
 
   Animated.spring(position, options).start(() => {
-    onStart && onStart();
-  });
+    onStart();
+   });
 };
 
 const createPanResponder = ({
   position,
   onSpringStart,
-  setDirection,
 }: IPanResponderProps): PanResponderInstance => {
   return PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -64,12 +63,11 @@ const createPanResponder = ({
 interface SwipableProps {
   children: React.ReactElement<{}>[];
   position: IPanResponderProps['position'];
-  setDirection: IPanResponderProps['setDirection'];
   currentCardIndex: number;
   setCurrentCardIndex: (index: number) => void;
 }
 
-const Swipable: React.FC<SwipableProps> = ({ children, position, setDirection, setCurrentCardIndex, currentCardIndex }) => {
+const Swipable: React.FC<SwipableProps> = ({ children, position, setCurrentCardIndex, currentCardIndex }) => {
   const childrenArr = Array.isArray(children) ? children : [children]; 
 
   const onSpringStart = () => {
@@ -78,13 +76,13 @@ const Swipable: React.FC<SwipableProps> = ({ children, position, setDirection, s
   };
 
   const panResponder = useMemo(() => {
-    return createPanResponder({ position, onSpringStart, setDirection });
+    return createPanResponder({ position, onSpringStart });
   }, [currentCardIndex]);
 
   const rotate = position.x.interpolate({
     inputRange: [-WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2],
     outputRange: ['-10deg', '0deg', '10deg'],
-    extrapolate: 'clamp',
+
   });
 
   const rotateAndTranslate = {
@@ -97,7 +95,7 @@ const Swipable: React.FC<SwipableProps> = ({ children, position, setDirection, s
   };
 
   return childrenArr.map((child: React.ReactElement<{}>, index) => {
-    let props = { style: { position: 'absolute' } };
+    let props = { style: { position: 'absolute', marginTop: (index + 1) * 6, marginRight: index * 6 } };
 
     if (index < currentCardIndex) {
       return null;
@@ -109,8 +107,8 @@ const Swipable: React.FC<SwipableProps> = ({ children, position, setDirection, s
       };
     }
 
-    return <Animated.View {...props}>{child}</Animated.View>;
-  });
+    return <Animated.View key={index} {...props}>{child}</Animated.View>;
+  }).reverse();
 };
 
 export default Swipable;
