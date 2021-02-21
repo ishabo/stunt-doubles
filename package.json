@@ -5,7 +5,7 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "format": "prettier --write \"**/*.tsx?\" ",
+    "format": "prettier --write \"**/*.tsx\" ",
     "test": "jest"
   },
   "dependencies": {
