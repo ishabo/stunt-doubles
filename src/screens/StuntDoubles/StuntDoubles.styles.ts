@@ -4,24 +4,23 @@ export const ViewWrapper = styled.View`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
-  position: relative;
+  flex: 1;
+  position: relative; 
 `;
 
 export const Title = styled.Text`
-  font-size: 24;
-  position: absolute;
+  font-size: 32px;
   color: white;
-  bottom: 50;
   z-index: 10;
-  background-color:rgba(0, 0, 0, 0.5);
-  padding: 2%;
+  background-color:rgba(0, 0, 0, 0.2);
+  padding: 1%;
+  position: absolute;
+  bottom: -10;
 `;
 
 export const CoverView = styled.View`
-  width: 350;
-  height: 550;
+  width: 350px; 
+  height: 550px;
   flex-direction: column;
   position: relative;
 `;
@@ -33,5 +32,5 @@ export const CoverImage = styled.Image `
 
 export const ActionButton = styled.Button`
   position: absolute;
-  bottom: 100;
+  bottom: 100px;
 `;

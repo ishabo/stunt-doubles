@@ -73,7 +73,7 @@ const Stack: React.FC<StackProps> = ({ data, onDone }) => {
               height: 114,
               width: 80,
               opacity: position.y.interpolate({
-                inputRange: [0, 40],
+                inputRange: [0, 200],
                 outputRange: [0, 1],
               }),
             }}

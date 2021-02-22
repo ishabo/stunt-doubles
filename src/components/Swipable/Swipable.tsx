@@ -1,63 +1,6 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import {
-  Animated,
-  PanResponder,
-  PanResponderInstance,
-  PanResponderGestureState,
-  GestureResponderEvent,
-  Dimensions,
-  Platform,
-} from 'react-native';
-
-const isWeb = Platform.OS === 'web';
-const { width: WINDOW_WIDTH } = Dimensions.get('window');
-
-interface IPanResponderProps {
-  position: Animated.ValueXY;
-  onSpringStart: () => void;
-}
-
-const onPanResponderRelease = ({
-  position,
-  onSpringStart,
-}: IPanResponderProps) => (
-  _: GestureResponderEvent,
-  gestureState: PanResponderGestureState,
-) => {
-  const { dy: y, dx: x } = gestureState;
-  let onStart = onSpringStart;
-  const options = {
-    toValue: { x: 0, y: 0 },
-    restSpeedThreshold: 100,
-    restDisplacementThreshold: 40,
-    useNativeDriver: !isWeb,
-  };
-
-  if (x > 120) {
-    options.toValue = { x: WINDOW_WIDTH + 100, y };
-  } else if (x < -120) {
-    options.toValue = { x: -WINDOW_WIDTH - 100, y };
-  } else {
-    onStart = () => {};
-  }
-
-  Animated.spring(position, options).start(() => {
-    onStart();
-  });
-};
-
-const createPanResponder = ({
-  position,
-  onSpringStart,
-}: IPanResponderProps): PanResponderInstance => {
-  return PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: (_, { dx: x, dy: y }) => {
-      position.setValue({ x, y });
-    },
-    onPanResponderRelease: onPanResponderRelease({ position, onSpringStart }),
-  });
-};
+import React from 'react';
+import { Animated } from 'react-native';
+import usePanResponder, { IPanResponderProps } from './hooks/usePanResponder';
 
 interface SwipableProps {
   children: React.ReactElement<{}>[];
@@ -79,13 +22,15 @@ const Swipable: React.FC<SwipableProps> = ({
     setCurrentCardIndex(currentCardIndex + 1);
   };
 
-  const panResponder = useMemo(() => {
-    return createPanResponder({ position, onSpringStart });
-  }, [currentCardIndex]);
+  const panResponder = usePanResponder({
+    position,
+    onSpringStart,
+    variableValues: [currentCardIndex],
+  });
 
   const rotate = position.x.interpolate({
-    inputRange: [-WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2],
-    outputRange: ['-10deg', '0deg', '10deg'],
+    inputRange: [-300, 0, 300],
+    outputRange: ['-20deg', '0deg', '20deg'],
   });
 
   const rotateAndTranslate = {
@@ -110,6 +55,7 @@ const Swipable: React.FC<SwipableProps> = ({
       if (index < currentCardIndex) {
         return null;
       }
+
       if (index === currentCardIndex) {
         props = {
           style: [rotateAndTranslate, { ...props.style, zIndex: 1 }],
