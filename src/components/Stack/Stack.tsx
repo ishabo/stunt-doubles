@@ -27,7 +27,7 @@ const Stack: React.FC<StackProps> = ({ data, onDone }) => {
 
   useEffect(() => {
     const index = currentCardIndex - 1;
-    if (currentCardIndex > 0 && !data[index].liked) {
+    if (currentCardIndex > 0 && data[index].liked === null) {
       if (direction === 'left') {
         console.log(index, data);
         data[index].liked = false;

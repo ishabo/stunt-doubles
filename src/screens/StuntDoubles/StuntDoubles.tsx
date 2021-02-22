@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 
 import { Stack } from '../../components/Stack';
-
+import { Result } from '../Result';
 import { stuntsDoubles } from '../../services/api';
 
 import {
@@ -23,13 +22,7 @@ const StuntDoubles: React.FC = () => {
   };
 
   if (!stuntsDoubles[currentStunt]) {
-    return (
-      <ViewWrapper>
-        <View>
-          <Text>No more stunt doubles</Text>
-        </View>
-      </ViewWrapper>
-    );
+    return <Result />;
   }
 
   return (
