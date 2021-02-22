@@ -1,16 +1,21 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { Animated, View, Text } from 'react-native';
+import { Animated } from 'react-native';
 
 import { Card } from '../../components/Card';
 import { Swipable } from '../../components/Swipable';
-import { Item } from '../../services/api';
+import { Stunt } from '../../services/api';
 
-import { LikeDislike, StackWrapper, StackView } from './Stack.styles';
+import {
+  LikeDislike,
+  StackWrapper,
+  StackView,
+  ImageWrapper,
+} from './Stack.styles';
 
 type Direction = 'left' | 'right' | undefined;
 
 interface StackProps {
-  data: Item[];
+  data: Stunt[];
   onDone(): void;
 }
 
@@ -61,29 +66,28 @@ const Stack: React.FC<StackProps> = ({ data, onDone }) => {
 
   return (
     <StackWrapper>
-      {direction && (
-        <Animated.View
-          style={{
-            height: 150,
-            width: 100,
-            zIndex: 10,
-            position: 'absolute',
-            top: 0,
-            opacity: position.y.interpolate({
-              inputRange: [0, 100],
-              outputRange: [0, 1],
-            }),
-          }}
-        >
-          <LikeDislike
-            source={
-              direction === 'right'
-                ? require('../../assets/like.png')
-                : require('../../assets/dislike.png')
-            }
-          />
-        </Animated.View>
-      )}
+      <ImageWrapper>
+        {direction && (
+          <Animated.View
+            style={{
+              height: 114,
+              width: 80,
+              opacity: position.y.interpolate({
+                inputRange: [0, 40],
+                outputRange: [0, 1],
+              }),
+            }}
+          >
+            <LikeDislike
+              source={
+                direction === 'right'
+                  ? require('../../assets/like.png')
+                  : require('../../assets/dislike.png')
+              }
+            />
+          </Animated.View>
+        )}
+      </ImageWrapper>
       <StackView>
         <Swipable
           position={position}

@@ -4,9 +4,7 @@ export const StackWrapper = styled.View`
   position: relative;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+  flex: 1;
  `;
 
 export const StackView = styled.View`
@@ -17,14 +15,15 @@ export const StackView = styled.View`
 `;
 
 export const LikeDislike = styled.Image`
-  justify-content: center;
-  flex: 1;
+  height: 114;
+  width:80;
 `;
 
 export const ImageWrapper = styled.View`
+    flex: 1;
     height: 150;
     width: 100;
     z-index: 10;
     position: absolute;
-    top: 0;
+    top: 15;
 `;
