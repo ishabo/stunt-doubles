@@ -12,7 +12,6 @@ import {
 const isWeb = Platform.OS === 'web';
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
 
-
 interface IPanResponderProps {
   position: Animated.ValueXY;
   onSpringStart: () => void;
@@ -44,7 +43,7 @@ const onPanResponderRelease = ({
 
   Animated.spring(position, options).start(() => {
     onStart();
-   });
+  });
 };
 
 const createPanResponder = ({
@@ -67,8 +66,13 @@ interface SwipableProps {
   setCurrentCardIndex: (index: number) => void;
 }
 
-const Swipable: React.FC<SwipableProps> = ({ children, position, setCurrentCardIndex, currentCardIndex }) => {
-  const childrenArr = Array.isArray(children) ? children : [children]; 
+const Swipable: React.FC<SwipableProps> = ({
+  children,
+  position,
+  setCurrentCardIndex,
+  currentCardIndex,
+}) => {
+  const childrenArr = Array.isArray(children) ? children : [children];
 
   const onSpringStart = () => {
     position.setValue({ x: 0, y: 0 });
@@ -82,7 +86,6 @@ const Swipable: React.FC<SwipableProps> = ({ children, position, setCurrentCardI
   const rotate = position.x.interpolate({
     inputRange: [-WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2],
     outputRange: ['-10deg', '0deg', '10deg'],
-
   });
 
   const rotateAndTranslate = {
@@ -94,21 +97,33 @@ const Swipable: React.FC<SwipableProps> = ({ children, position, setCurrentCardI
     ],
   };
 
-  return childrenArr.map((child: React.ReactElement<{}>, index) => {
-    let props = { style: { position: 'absolute', marginTop: (index + 1) * 6, marginRight: index * 6 } };
-
-    if (index < currentCardIndex) {
-      return null;
-    }
-    if (index === currentCardIndex) {
-      props = {
-        style: [rotateAndTranslate, { ...props.style, zIndex: 1 }],
-        ...panResponder.panHandlers,
+  return childrenArr
+    .map((child: React.ReactElement<{}>, index) => {
+      let props = {
+        style: {
+          position: 'absolute',
+          marginTop: (index + 1) * 6,
+          marginRight: index * 6,
+        },
       };
-    }
 
-    return <Animated.View key={index} {...props}>{child}</Animated.View>;
-  }).reverse();
+      if (index < currentCardIndex) {
+        return null;
+      }
+      if (index === currentCardIndex) {
+        props = {
+          style: [rotateAndTranslate, { ...props.style, zIndex: 1 }],
+          ...panResponder.panHandlers,
+        };
+      }
+
+      return (
+        <Animated.View key={index} {...props}>
+          {child}
+        </Animated.View>
+      );
+    })
+    .reverse();
 };
 
 export default Swipable;

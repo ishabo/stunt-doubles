@@ -1,1 +1,1 @@
-export { default as StuntDoubles, Movie } from './StuntDoubles';
+export { default as StuntDoubles } from './StuntDoubles';

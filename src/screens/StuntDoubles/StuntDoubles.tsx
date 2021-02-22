@@ -1,98 +1,50 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { Animated, ImageSourcePropType } from 'react-native';
+import React from 'react';
+import { View, Text } from 'react-native';
 
-import { Card } from '../../components/Card';
-import { Swipable } from '../../components/Swipable';
+import { Stack } from '../../components/Stack';
 
-import { LikeDislike, StuntDoublesWrapper, MoviesStack } from './StuntDoubles.styles';
+import { stuntsDoubles } from '../../services/api';
 
-export interface Movie {
-  title: string;
-  liked: null | boolean;
-  image: ImageSourcePropType;
-}
+import {
+  ViewWrapper,
+  CoverView,
+  CoverImage,
+  Title,
+  ActionButton,
+} from './StuntDoubles.styles';
 
-type Direction = 'left' | 'right' | undefined;
+const StuntDoubles: React.FC = () => {
+  const [currentStunt, setCurrentStunt] = React.useState(0);
+  const [hasStarted, setHasStarted] = React.useState(false);
 
-interface StuntDoublesProps {
-    movies: Movie[];
-}
+  const onDone = () => {
+    setCurrentStunt(currentStunt + 1);
+    setHasStarted(false);
+  };
 
-const StuntDoubles: React.FC<StuntDoublesProps> = ({movies}) => {
-  const position = useMemo(() => new Animated.ValueXY(), []);
-
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [direction, setDirection] = useState<Direction>();
-
-  console.log(movies, currentCardIndex);
-  useEffect(() => {
-      const index = currentCardIndex - 1;
-      if (currentCardIndex > 0 && !movies[index].liked) {
-    if (direction === 'left') {
-      console.log(index,  movies);
-      movies[index].liked = false;
-    } else if (direction === 'right') {
-      movies[index].liked = true;
-      console.log(index, movies);
-    }
-}
-  
-  }, [direction, currentCardIndex]);
-
-  useEffect(() => {
-    setDirection(undefined);
-  }, [currentCardIndex]);
-
-  useEffect(() => {
-    const onPosition = ({value}: {value: number}) => {
-      if (direction !== 'right' && value > 0) {
-         setDirection('right');
-      }
-      if (direction !== 'left' && value < 0) {
-         setDirection('left');
-      }
-      
-      return 'onPosition';
-    };
-
-    position.x.addListener(onPosition);
-
-    return () => {
-      position.x.removeListener('onPosition');
-    }
-  }, []);
+  if (!stuntsDoubles[currentStunt]) {
+    return (
+      <ViewWrapper>
+        <View>
+          <Text>No more stunt doubles</Text>
+        </View>
+      </ViewWrapper>
+    );
+  }
 
   return (
-    <StuntDoublesWrapper>
-      {direction && <Animated.View
-        style={{
-            height: 150,
-            width: 100,
-            zIndex: 10,
-            position: 'absolute',
-            top: 0,
-          opacity: position.y.interpolate({
-            inputRange: [0, 100],
-            outputRange: [0, 1],
-          }),
-        }}
-      >
-        <LikeDislike
-          source={direction === 'right' ? require('../../assets/like.png') : require('../../assets/dislike.png')}
-        />
-      </Animated.View>}
-      <MoviesStack>
-        <Swipable position={position} setDirection={setDirection} setCurrentCardIndex={setCurrentCardIndex} currentCardIndex={currentCardIndex}>
-            {movies.map(({image}, i) => (
-            <Card
-                key={i}
-                source={image}
-            />
-            ))}
-        </Swipable>
-      </MoviesStack>
-    </StuntDoublesWrapper>
+    <ViewWrapper>
+      <Title>{stuntsDoubles[currentStunt].original.name}</Title>
+      {hasStarted ? (
+        <Stack data={stuntsDoubles[currentStunt].stunts} onDone={onDone} />
+      ) : (
+        <CoverView>
+          <CoverImage source={stuntsDoubles[currentStunt].original.image} />
+          <ActionButton title={'Start'} onPress={() => setHasStarted(true)} />
+        </CoverView>
+      )}
+    </ViewWrapper>
   );
-}
+};
 
 export default StuntDoubles;

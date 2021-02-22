@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 export const CardWrapper = styled.View`
     width: 260;
     height: 550;
-    background-color: black;
     border-radius: 10px;
 `;
 

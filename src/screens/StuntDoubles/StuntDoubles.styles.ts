@@ -1,31 +1,37 @@
 import styled from 'styled-components/native';
 
-export const StuntDoublesWrapper = styled.View`
-  position: relative;
+export const ViewWrapper = styled.View`
   align-items: center;
   justify-content: center;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: #f2f2f2;
+  position: relative;
 `;
 
-export const MoviesStack = styled.View`
-  width: 250;
+export const Title = styled.Text`
+  font-size: 24;
+  position: absolute;
+  color: white;
+  bottom: 50;
+  z-index: 10;
+  background-color:rgba(0, 0, 0, 0.5);
+  padding: 2%;
+`;
+
+export const CoverView = styled.View`
+  width: 350;
+  height: 550;
+  flex-direction: column;
+  position: relative;
+`;
+
+export const CoverImage = styled.Image `
+  width: 100%;
   height: 100%;
-  align-items: center;
-  justify-content: center;
 `;
 
-export const LikeDislike = styled.Image`
-  justify-content: center;
-  flex: 1;
-`;
-
-export const ImageWrapper = styled.View`
-    height: 150;
-    width: 100;
-    z-index: 10;
-    position: absolute;
-    top: 0;
+export const ActionButton = styled.Button`
+  position: absolute;
+  bottom: 100;
 `;
